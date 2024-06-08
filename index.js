@@ -283,17 +283,12 @@ async function run() {
     });
 
     // put agreement status as checked and set user as member
-    app.patch(
-      '/agreements/accept/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.patch( '/agreements/accept/:id', verifyToken, verifyAdmin, async (req, res) => {
         const doc = req.body;
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
-        const update = {
-          $set: { status: 'checked', acceptDate: doc?.acceptDate },
-        };
+        const update = { $set: { status: 'checked', acceptDate: doc?.acceptDate } };
+      
         const agree = await agreementCollection.updateOne(filter, update);
         const document = await agreementCollection.findOne(filter);
 
