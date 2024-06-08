@@ -170,29 +170,45 @@ async function run() {
 
     // get all announcements
     app.get('/announcements', verifyToken, async (req, res) => {
-      const result = await announcementCollection.find().sort({ $natural: -1 }).toArray();
+      const result = await announcementCollection
+        .find()
+        .sort({ $natural: -1 })
+        .toArray();
       res.send(result);
     });
 
-    // get an announcement
-    app.get('/announcements/:id', async (req, res) => {
+    // get an announcement by id
+    app.get('/announcements/:id', verifyToken, async (req, res) => {
       const id = req.params.id;
-      const result = await announcementCollection.findOne({ _id: new ObjectId(id) });
+      const result = await announcementCollection.findOne({
+        _id: new ObjectId(id),
+      });
       res.send(result);
     });
 
     // update an announcement
-    app.patch('/announcements/:id',  verifyToken, verifyAdmin, async (req, res) => {
+    app.patch(
+      '/announcements/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = { $set: req.body };
-        const result = await announcementCollection.updateOne( filter, updateDoc );
+        const result = await announcementCollection.updateOne(
+          filter,
+          updateDoc
+        );
         res.send(result);
       }
     );
 
     // delete an announcement
-    app.delete('/announcements/:id', verifyToken, verifyAdmin, async (req, res) => {
+    app.delete(
+      '/announcements/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await announcementCollection.deleteOne(filter);
@@ -218,7 +234,11 @@ async function run() {
     app.get('/apartments', async (req, res) => {
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
-      const result = await apartmentCollection.find().skip(page * size).limit(size).toArray();
+      const result = await apartmentCollection
+        .find()
+        .skip(page * size)
+        .limit(size)
+        .toArray();
       res.send(result);
     });
 
@@ -229,7 +249,7 @@ async function run() {
     });
 
     // get an apartment by id
-    app.get('/apartments/:id', async (req, res) => {
+    app.get('/apartments/:id', verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const result = await apartmentCollection.findOne(filter);
@@ -246,7 +266,11 @@ async function run() {
     });
 
     // delete an apartment
-    app.delete('/apartments/:id', verifyToken, verifyAdmin, async (req, res) => {
+    app.delete(
+      '/apartments/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await apartmentCollection.deleteOne(filter);
@@ -263,18 +287,32 @@ async function run() {
     });
 
     // get an agreement status by email
-    app.get('/agreements/:email', verifyToken, verifyMember, async (req, res) => {
-      const email = req.params.email;
-      const result = await agreementCollection.findOne({ lesseeEmail: email });
-      res.send(result?.status);
-    });
+    app.get(
+      '/agreements/:email',
+      verifyToken,
+      verifyMember,
+      async (req, res) => {
+        const email = req.params.email;
+        const result = await agreementCollection.findOne({
+          lesseeEmail: email,
+        });
+        res.send(result?.status);
+      }
+    );
 
     // get an agreement by email
-    app.get('/agreement/:email', verifyToken, verifyMember, async (req, res) => {
-      const email = req.params.email;
-      const result = await agreementCollection.findOne({ lesseeEmail: email });
-      res.send(result);
-    });
+    app.get(
+      '/agreement/:email',
+      verifyToken,
+      verifyMember,
+      async (req, res) => {
+        const email = req.params.email;
+        const result = await agreementCollection.findOne({
+          lesseeEmail: email,
+        });
+        res.send(result);
+      }
+    );
 
     // get all agreements
     app.get('/agreements', verifyToken, verifyAdmin, async (req, res) => {
@@ -283,12 +321,18 @@ async function run() {
     });
 
     // put agreement status as checked and set user as member
-    app.patch( '/agreements/accept/:id', verifyToken, verifyAdmin, async (req, res) => {
+    app.patch(
+      '/agreements/accept/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const doc = req.body;
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
-        const update = { $set: { status: 'checked', acceptDate: doc?.acceptDate } };
-      
+        const update = {
+          $set: { status: 'checked', acceptDate: doc?.acceptDate },
+        };
+
         const agree = await agreementCollection.updateOne(filter, update);
         const document = await agreementCollection.findOne(filter);
 
@@ -314,7 +358,11 @@ async function run() {
     );
 
     // put agreement status as checked only
-    app.patch( '/agreements/reject/:id', verifyToken, verifyAdmin, async (req, res) => {
+    app.patch(
+      '/agreements/reject/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const update = { $set: { status: 'checked' } };
@@ -328,7 +376,6 @@ async function run() {
     app.post('/create-payment-intent', verifyToken, async (req, res) => {
       const { rent } = req.body;
       const amount = parseInt(rent * 100);
-
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'usd',
@@ -341,7 +388,6 @@ async function run() {
     app.post('/payments', verifyToken, async (req, res) => {
       const payment = req.body;
       const result = await paymentCollection.insertOne(payment);
-
       res.send(result);
     });
 
@@ -421,13 +467,16 @@ async function run() {
     // admin-stats
     app.get('/admin-stats', verifyToken, verifyAdmin, async (req, res) => {
       // const users = await userCollection.countDocuments()
-      const totalApartments = await apartmentCollection.estimatedDocumentCount();
-      const totalAgreements = await agreementCollection.estimatedDocumentCount();
+      const totalApartments =
+        await apartmentCollection.estimatedDocumentCount();
+      const totalAgreements =
+        await agreementCollection.estimatedDocumentCount();
       const totalPayments = await paymentCollection.estimatedDocumentCount();
 
-      const result = await paymentCollection.aggregate([{ $group: { _id: null, totalAmmount: { $sum: '$rent' } } }])
+      const result = await paymentCollection
+        .aggregate([{ $group: { _id: null, totalAmmount: { $sum: '$rent' } } }])
         .toArray();
-      
+
       const revenue = result.length > 0 ? result[0].totalAmmount : 0;
       const { thisWeek, lastWeek } = getWeekRanges();
 
@@ -444,7 +493,7 @@ async function run() {
           $lte: lastWeek.end.toISOString(),
         },
       });
-      
+
       const isPaymentGrowing = thisWeekPayments > lastWeekPayments;
 
       const allMembers = await userCollection
