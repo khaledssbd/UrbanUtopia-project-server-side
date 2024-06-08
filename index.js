@@ -314,16 +314,11 @@ async function run() {
     );
 
     // put agreement status as checked only
-    app.patch(
-      '/agreements/reject/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.patch( '/agreements/reject/:id', verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const update = { $set: { status: 'checked' } };
         const data = await agreementCollection.updateOne(filter, update);
-
         res.send(data);
       }
     );
