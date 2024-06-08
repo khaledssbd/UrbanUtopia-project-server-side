@@ -389,7 +389,6 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const result = await couponCollection.deleteOne(filter);
-      
       res.send(result);
     });
 
@@ -422,17 +421,14 @@ async function run() {
     // admin-stats
     app.get('/admin-stats', verifyToken, verifyAdmin, async (req, res) => {
       // const users = await userCollection.countDocuments()
-      const totalApartments =
-        await apartmentCollection.estimatedDocumentCount();
-      const totalAgreements =
-        await agreementCollection.estimatedDocumentCount();
+      const totalApartments = await apartmentCollection.estimatedDocumentCount();
+      const totalAgreements = await agreementCollection.estimatedDocumentCount();
       const totalPayments = await paymentCollection.estimatedDocumentCount();
 
-      const result = await paymentCollection
-        .aggregate([{ $group: { _id: null, totalAmmount: { $sum: '$rent' } } }])
+      const result = await paymentCollection.aggregate([{ $group: { _id: null, totalAmmount: { $sum: '$rent' } } }])
         .toArray();
+      
       const revenue = result.length > 0 ? result[0].totalAmmount : 0;
-
       const { thisWeek, lastWeek } = getWeekRanges();
 
       // isRevenueGrowing
@@ -448,6 +444,7 @@ async function run() {
           $lte: lastWeek.end.toISOString(),
         },
       });
+      
       const isPaymentGrowing = thisWeekPayments > lastWeekPayments;
 
       const allMembers = await userCollection
