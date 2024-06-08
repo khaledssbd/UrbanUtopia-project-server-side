@@ -164,7 +164,6 @@ async function run() {
     // post a new announcement
     app.post('/announcements', verifyToken, verifyAdmin, async (req, res) => {
       const announcement = { ...req.body, date: Date.now() };
-
       const result = await announcementCollection.insertOne(announcement);
       res.send(result);
     });
@@ -178,9 +177,7 @@ async function run() {
     // get an announcement
     app.get('/announcements/:id', async (req, res) => {
       const id = req.params.id;
-      const result = await announcementCollection.findOne({
-        _id: new ObjectId(id),
-      });
+      const result = await announcementCollection.findOne({ _id: new ObjectId(id) });
       res.send(result);
     });
 
@@ -222,7 +219,6 @@ async function run() {
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
       const result = await apartmentCollection.find().skip(page * size).limit(size).toArray();
-
       res.send(result);
     });
 
@@ -236,7 +232,6 @@ async function run() {
     app.get('/apartments/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-
       const result = await apartmentCollection.findOne(filter);
       res.send(result);
     });
@@ -246,17 +241,12 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const updateDoc = { $set: req.body };
-      
       const result = await apartmentCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
 
     // delete an apartment
-    app.delete(
-      '/apartments/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.delete('/apartments/:id', verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await apartmentCollection.deleteOne(filter);
