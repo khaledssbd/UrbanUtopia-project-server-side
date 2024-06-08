@@ -334,6 +334,7 @@ async function run() {
         currency: 'usd',
         payment_method_types: ['card'],
       });
+
       res.send({ clientSecret: paymentIntent.client_secret });
     });
 
@@ -341,6 +342,7 @@ async function run() {
     app.post('/payments', verifyToken, async (req, res) => {
       const payment = req.body;
       const result = await paymentCollection.insertOne(payment);
+
       res.send(result);
     });
 
@@ -348,6 +350,7 @@ async function run() {
     app.get('/payments/:email', verifyToken, verifyMember, async (req, res) => {
       const email = req.params.email;
       const result = await paymentCollection.find({ email }).toArray();
+
       res.send(result);
     });
 
@@ -356,6 +359,7 @@ async function run() {
       const { search, email } = req.query;
       const filter = { month: { $regex: search, $options: 'i' }, email };
       const payments = await paymentCollection.find(filter).toArray();
+
       res.send(payments);
     });
 
@@ -364,12 +368,14 @@ async function run() {
     app.post('/coupons', verifyToken, verifyAdmin, async (req, res) => {
       const coupon = req.body;
       const result = await couponCollection.insertOne(coupon);
+
       res.send(result);
     });
 
     // get all coupons
     app.get('/coupons', async (req, res) => {
       const result = await couponCollection.find().toArray();
+
       res.send(result);
     });
 
@@ -380,6 +386,7 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const updateDoc = { $set: { status: bodyData.newStatus } };
       const result = await couponCollection.updateOne(filter, updateDoc);
+
       res.send(result);
     });
 
@@ -388,6 +395,7 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const result = await couponCollection.deleteOne(filter);
+      
       res.send(result);
     });
 
