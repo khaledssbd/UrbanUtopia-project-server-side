@@ -114,7 +114,6 @@ async function run() {
     // Check user role
     app.get('/user/role/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
-
       const result = await userCollection.findOne({ email });
       res.send(result?.role);
     });
