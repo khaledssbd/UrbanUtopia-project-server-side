@@ -211,21 +211,17 @@ async function run() {
       res.send(result);
     });
 
-    // get all apartments
-    app.get('/apartments', async (req, res) => {
-      const result = await apartmentCollection.find().toArray();
-      res.send(result);
-    });
+    // // get all apartments
+    // app.get('/apartments', async (req, res) => {
+    //   const result = await apartmentCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     // Get apartments by pagination
     app.get('/apartments', async (req, res) => {
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
-      const result = await apartmentCollection
-        .find()
-        .skip(page * size)
-        .limit(size)
-        .toArray();
+      const result = await apartmentCollection.find().skip(page * size).limit(size).toArray();
 
       res.send(result);
     });
