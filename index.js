@@ -349,7 +349,6 @@ async function run() {
     app.get('/payments/:email', verifyToken, verifyMember, async (req, res) => {
       const email = req.params.email;
       const result = await paymentCollection.find({ email }).toArray();
-
       res.send(result);
     });
 
@@ -358,7 +357,6 @@ async function run() {
       const { search, email } = req.query;
       const filter = { month: { $regex: search, $options: 'i' }, email };
       const payments = await paymentCollection.find(filter).toArray();
-
       res.send(payments);
     });
 
