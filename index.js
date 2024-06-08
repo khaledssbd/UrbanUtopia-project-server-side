@@ -102,7 +102,6 @@ async function run() {
       next();
     };
 
-
     // users related API
     // Post a user while registering or logging in
     app.post('/user', async (req, res) => {
@@ -132,18 +131,29 @@ async function run() {
     });
 
     // patch a member role as user
-    app.patch('/users/member/:email', verifyToken, verifyAdmin, async (req, res) => {
+    app.patch(
+      '/users/member/:email',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const email = req.params.email;
         const filter = { email };
         const document = { $set: { role: 'user' } };
-      
+
         // delete the agreement also
         await agreementCollection.deleteOne({ lesseeEmail: email });
         await apartmentCollection.updateOne(
           { lesseeEmail: email },
-          { $set: { status: 'available', lesseeName: 'to-let', lesseeEmail: 'to-let', rentedDate: 'to-let' } }
-         );
-      
+          {
+            $set: {
+              status: 'available',
+              lesseeName: 'to-let',
+              lesseeEmail: 'to-let',
+              rentedDate: 'to-let',
+            },
+          }
+        );
+
         const result = await userCollection.updateOne(filter, document);
 
         res.send(result);
@@ -153,10 +163,7 @@ async function run() {
     // Announcents related API
     // post a new announcement
     app.post('/announcements', verifyToken, verifyAdmin, async (req, res) => {
-      const announcement = {
-        ...req.body,
-        date: Date.now(),
-      };
+      const announcement = { ...req.body, date: Date.now() };
 
       const result = await announcementCollection.insertOne(announcement);
       res.send(result);
@@ -168,6 +175,7 @@ async function run() {
         .find()
         .sort({ $natural: -1 })
         .toArray();
+
       res.send(result);
     });
 
@@ -327,7 +335,7 @@ async function run() {
             },
           }
         );
-        
+
         const data = await userCollection.updateOne(
           { email: document?.lesseeEmail },
           { $set: { role: 'member', acceptDate: doc.acceptDate } }
@@ -507,7 +515,6 @@ async function run() {
       });
     });
 
-    
     // Send a ping to confirm a successful connection to DB
     await client.db('admin').command({ ping: 1 });
     console.log(
