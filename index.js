@@ -211,11 +211,11 @@ async function run() {
       res.send(result);
     });
 
-    // // get all apartments
-    // app.get('/apartments', async (req, res) => {
-    //   const result = await apartmentCollection.find().toArray();
-    //   res.send(result);
-    // });
+    // get all apartments
+    app.get('/apartments', async (req, res) => {
+      const result = await apartmentCollection.find().toArray();
+      res.send(result);
+    });
 
     // Get apartments by pagination
     app.get('/apartments', async (req, res) => {
