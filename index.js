@@ -269,11 +269,10 @@ async function run() {
       res.send(result?.status);
     });
 
-    //get an agreement by email
+    // get an agreement by email
     app.get('/agreement/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
       const result = await agreementCollection.findOne({ lesseeEmail: email });
-
       res.send(result);
     });
 
