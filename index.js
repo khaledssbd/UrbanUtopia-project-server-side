@@ -236,7 +236,7 @@ async function run() {
     app.get('/apartments/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-      
+
       const result = await apartmentCollection.findOne(filter);
       res.send(result);
     });
@@ -246,6 +246,7 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const updateDoc = { $set: req.body };
+      
       const result = await apartmentCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
