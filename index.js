@@ -381,7 +381,6 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const updateDoc = { $set: { status: bodyData.newStatus } };
       const result = await couponCollection.updateOne(filter, updateDoc);
-
       res.send(result);
     });
 
