@@ -365,14 +365,12 @@ async function run() {
     app.post('/coupons', verifyToken, verifyAdmin, async (req, res) => {
       const coupon = req.body;
       const result = await couponCollection.insertOne(coupon);
-
       res.send(result);
     });
 
     // get all coupons
     app.get('/coupons', async (req, res) => {
       const result = await couponCollection.find().toArray();
-
       res.send(result);
     });
 
