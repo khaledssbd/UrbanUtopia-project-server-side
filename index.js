@@ -259,7 +259,6 @@ async function run() {
     app.post('/agreements', verifyToken, async (req, res) => {
       const booking = req.body;
       const result = await agreementCollection.insertOne(booking);
-
       res.send(result);
     });
 
@@ -267,7 +266,6 @@ async function run() {
     app.get('/agreements/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
       const result = await agreementCollection.findOne({ lesseeEmail: email });
-
       res.send(result?.status);
     });
 
@@ -282,7 +280,7 @@ async function run() {
     // get all agreements
     app.get('/agreements', verifyToken, verifyAdmin, async (req, res) => {
       const result = await agreementCollection.find().toArray();
-      
+
       res.send(result);
     });
 
