@@ -195,11 +195,7 @@ async function run() {
     );
 
     // delete an announcement
-    app.delete(
-      '/announcements/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.delete('/announcements/:id', verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await announcementCollection.deleteOne(filter);
