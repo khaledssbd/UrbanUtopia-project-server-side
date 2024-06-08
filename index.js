@@ -171,11 +171,7 @@ async function run() {
 
     // get all announcements
     app.get('/announcements', verifyToken, async (req, res) => {
-      const result = await announcementCollection
-        .find()
-        .sort({ $natural: -1 })
-        .toArray();
-
+      const result = await announcementCollection.find().sort({ $natural: -1 }).toArray();
       res.send(result);
     });
 
