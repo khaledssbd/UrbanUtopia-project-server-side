@@ -170,10 +170,7 @@ async function run() {
 
     // get all announcements
     app.get('/announcements', verifyToken, async (req, res) => {
-      const result = await announcementCollection
-        .find()
-        .sort({ $natural: -1 })
-        .toArray();
+      const result = await announcementCollection.find().sort({ $natural: -1 }).toArray();
       res.send(result);
     });
 
@@ -187,11 +184,7 @@ async function run() {
     });
 
     // update an announcement
-    app.patch(
-      '/announcements/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.patch( '/announcements/:id', verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = { $set: req.body };
@@ -204,11 +197,7 @@ async function run() {
     );
 
     // delete an announcement
-    app.delete(
-      '/announcements/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.delete( '/announcements/:id', verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await announcementCollection.deleteOne(filter);
