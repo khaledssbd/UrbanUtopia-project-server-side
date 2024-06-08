@@ -132,30 +132,19 @@ async function run() {
     });
 
     // patch a member role as user
-    app.patch(
-      '/users/member/:email',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.patch('/users/member/:email', verifyToken, verifyAdmin, async (req, res) => {
         const email = req.params.email;
         const filter = { email };
         const document = { $set: { role: 'user' } };
-
+      
+        // delete the agreement also
         await agreementCollection.deleteOne({ lesseeEmail: email });
         await apartmentCollection.updateOne(
           { lesseeEmail: email },
-          {
-            $set: {
-              status: 'available',
-              lesseeName: 'to-let',
-              lesseeEmail: 'to-let',
-              rentedDate: 'to-let',
-            },
-          }
-        );
+          { $set: { status: 'available', lesseeName: 'to-let', lesseeEmail: 'to-let', rentedDate: 'to-let' } }
+         );
+      
         const result = await userCollection.updateOne(filter, document);
-
-        // delete the agreement also
 
         res.send(result);
       }
