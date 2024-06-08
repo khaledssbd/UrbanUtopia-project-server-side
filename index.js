@@ -204,7 +204,7 @@ async function run() {
     );
 
     // apartment related API
-    // post an apartments
+    // post an apartment
     app.post('/apartments', verifyToken, verifyAdmin, async (req, res) => {
       const apartment = req.body;
       const result = await apartmentCollection.insertOne(apartment);
