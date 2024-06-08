@@ -263,14 +263,14 @@ async function run() {
     });
 
     // get an agreement status by email
-    app.get('/agreements/:email', verifyToken, async (req, res) => {
+    app.get('/agreements/:email', verifyToken, verifyMember, async (req, res) => {
       const email = req.params.email;
       const result = await agreementCollection.findOne({ lesseeEmail: email });
       res.send(result?.status);
     });
 
     // get an agreement by email
-    app.get('/agreement/:email', verifyToken, async (req, res) => {
+    app.get('/agreement/:email', verifyToken, verifyMember, async (req, res) => {
       const email = req.params.email;
       const result = await agreementCollection.findOne({ lesseeEmail: email });
       res.send(result);
@@ -279,7 +279,6 @@ async function run() {
     // get all agreements
     app.get('/agreements', verifyToken, verifyAdmin, async (req, res) => {
       const result = await agreementCollection.find().toArray();
-
       res.send(result);
     });
 
