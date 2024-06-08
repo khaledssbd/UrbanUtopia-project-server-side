@@ -184,19 +184,12 @@ async function run() {
       res.send(result);
     });
 
-    //update an announcement
-    app.patch(
-      '/announcements/:id',
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    // update an announcement
+    app.patch('/announcements/:id',  verifyToken, verifyAdmin, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = { $set: req.body };
-        const result = await announcementCollection.updateOne(
-          filter,
-          updateDoc
-        );
+        const result = await announcementCollection.updateOne( filter, updateDoc );
         res.send(result);
       }
     );
