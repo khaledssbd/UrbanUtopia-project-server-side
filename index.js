@@ -439,55 +439,60 @@ async function run() {
     // total amount from payments
     const getWeekRanges = () => {
       const today = new Date();
-      const startOfThisWeek = new Date(
-        today.setDate(today.getDate() - today.getDay())
-      );
 
+      // Calculate the start of this week (Sunday)
+      const startOfThisWeek = new Date(today);
+      startOfThisWeek.setDate(today.getDate() - today.getDay());
+      startOfThisWeek.setUTCHours(0, 0, 0, 0); // Start of the day in UTC
+
+      // Calculate the start of last week
       const startOfLastWeek = new Date(startOfThisWeek);
       startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+      startOfLastWeek.setUTCHours(0, 0, 0, 0); // Start of the day in UTC
 
+      // Calculate the end of last week
       const endOfLastWeek = new Date(startOfThisWeek);
       endOfLastWeek.setDate(endOfLastWeek.getDate() - 1);
+      endOfLastWeek.setUTCHours(23, 59, 59, 999); // End of the day in UTC
 
       return {
         thisWeek: {
-          start: startOfThisWeek,
-          end: new Date(),
+          start: startOfThisWeek.toISOString(),
+          end: new Date().toISOString(), // End of this week is the current date and time in ISO
         },
         lastWeek: {
-          start: startOfLastWeek,
-          end: endOfLastWeek,
+          start: startOfLastWeek.toISOString(),
+          end: endOfLastWeek.toISOString(),
         },
       };
     };
 
     // admin-stats
     app.get('/admin-stats', verifyToken, verifyAdmin, async (req, res) => {
-      // const users = await userCollection.countDocuments()
       const totalApartments =
         await apartmentCollection.estimatedDocumentCount();
-      const totalAgreements =
-        await agreementCollection.estimatedDocumentCount();
       const totalPayments = await paymentCollection.estimatedDocumentCount();
 
       const result = await paymentCollection
-        .aggregate([{ $group: { _id: null, totalAmmount: { $sum: '$rent' } } }])
+        .aggregate([{ $group: { _id: null, totalAmount: { $sum: '$rent' } } }])
         .toArray();
 
-      const revenue = result.length > 0 ? result[0].totalAmmount : 0;
+      const revenue = result.length > 0 ? result[0].totalAmount : 0;
       const { thisWeek, lastWeek } = getWeekRanges();
 
-      // isRevenueGrowing
+      // Get this week's payments
       const thisWeekPayments = await paymentCollection.countDocuments({
         date: {
-          $gte: thisWeek.start.toISOString(),
-          $lte: thisWeek.end.toISOString(),
+          $gte: thisWeek.start,
+          $lte: thisWeek.end,
         },
       });
+
+      // Get last week's payments
       const lastWeekPayments = await paymentCollection.countDocuments({
         date: {
-          $gte: lastWeek.start.toISOString(),
-          $lte: lastWeek.end.toISOString(),
+          $gte: lastWeek.start,
+          $lte: lastWeek.end,
         },
       });
 
@@ -503,18 +508,16 @@ async function run() {
       const availableApartments = await apartmentCollection
         .find({ status: 'available' })
         .toArray();
+      const availableApartmentsCount = availableApartments?.length || 0;
 
-      const availableApartmentsCount = availableApartments.length;
-
-      const availableApartmentsParcent =
+      const availableApartmentsPercent =
         (availableApartmentsCount / totalApartments) * 100;
-
-      const unAvailableApartmentsParcent = 100 - availableApartmentsParcent;
+      const unavailableApartmentsPercent = 100 - availableApartmentsPercent;
 
       res.send({
         totalApartments,
-        availableApartmentsParcent,
-        unAvailableApartmentsParcent,
+        availableApartmentsPercent,
+        unavailableApartmentsPercent,
         revenue,
         userCount,
         memberCount,
