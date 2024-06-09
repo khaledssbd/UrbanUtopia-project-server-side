@@ -13,7 +13,14 @@ const port = process.env.PORT || 5000;
 
 // all middleware
 const corsConfig = {
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://urbanutopia-by-khaled.web.app',
+    'https://urbanutopia-by-khaled.vercel.app',
+    'https://urbanutopia-by-khaled.surge.sh',
+    'https://urbanutopia-by-khaled.netlify.app',
+  ],
   credentials: true,
 };
 app.use(cors(corsConfig));
@@ -170,7 +177,10 @@ async function run() {
 
     // get all announcements
     app.get('/announcements', verifyToken, async (req, res) => {
-      const result = await announcementCollection.find().sort({ $natural: -1 }).toArray();
+      const result = await announcementCollection
+        .find()
+        .sort({ $natural: -1 })
+        .toArray();
       res.send(result);
     });
 
@@ -184,7 +194,11 @@ async function run() {
     });
 
     // update an announcement
-    app.patch( '/announcements/:id', verifyToken, verifyAdmin, async (req, res) => {
+    app.patch(
+      '/announcements/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = { $set: req.body };
@@ -197,7 +211,11 @@ async function run() {
     );
 
     // delete an announcement
-    app.delete( '/announcements/:id', verifyToken, verifyAdmin, async (req, res) => {
+    app.delete(
+      '/announcements/:id',
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await announcementCollection.deleteOne(filter);
@@ -276,32 +294,22 @@ async function run() {
     });
 
     // get an agreement status by email
-    app.get(
-      '/agreements/:email',
-      verifyToken,
-      verifyMember,
-      async (req, res) => {
-        const email = req.params.email;
-        const result = await agreementCollection.findOne({
-          lesseeEmail: email,
-        });
-        res.send(result?.status);
-      }
-    );
+    app.get('/agreements/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const result = await agreementCollection.findOne({
+        lesseeEmail: email,
+      });
+      res.send(result?.status);
+    });
 
     // get an agreement by email
-    app.get(
-      '/agreement/:email',
-      verifyToken,
-      verifyMember,
-      async (req, res) => {
-        const email = req.params.email;
-        const result = await agreementCollection.findOne({
-          lesseeEmail: email,
-        });
-        res.send(result);
-      }
-    );
+    app.get('/agreement/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const result = await agreementCollection.findOne({
+        lesseeEmail: email,
+      });
+      res.send(result);
+    });
 
     // get all agreements
     app.get('/agreements', verifyToken, verifyAdmin, async (req, res) => {
@@ -388,7 +396,7 @@ async function run() {
     });
 
     // get payments by month search
-    app.get('/search-payments', verifyToken, async (req, res) => {
+    app.get('/search-payments', verifyToken, verifyMember, async (req, res) => {
       const { search, email } = req.query;
       const filter = { month: { $regex: search, $options: 'i' }, email };
       const payments = await paymentCollection.find(filter).toArray();
@@ -516,10 +524,10 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection to DB
-    await client.db('admin').command({ ping: 1 });
-    console.log(
-      'Pinged your deployment. You successfully connected to MongoDB!'
-    );
+    // await client.db('admin').command({ ping: 1 });
+    // console.log(
+    //   'Pinged your deployment. You successfully connected to MongoDB!'
+    // );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
