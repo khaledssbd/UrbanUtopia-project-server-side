@@ -110,9 +110,18 @@ async function run() {
     };
 
     // users related API
-    // Post a user while registering or logging in
-    app.post('/user', async (req, res) => {
+    // Put a user while registering or logging in
+    app.put('/user', async (req, res) => {
       const user = req.body;
+
+      const query = { email: user?.email };
+      // check if user already exists in db
+      const isExist = await userCollection.findOne(query);
+      if (isExist) {
+        // if existing user login again
+        return res.send(isExist);
+      }
+
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
@@ -347,7 +356,13 @@ async function run() {
 
         const data = await userCollection.updateOne(
           { email: document?.lesseeEmail },
-          { $set: { role: 'member', acceptDate: doc.acceptDate } }
+          {
+            $set: {
+              role: 'member',
+              name: document?.lesseeName,
+              acceptDate: doc.acceptDate,
+            },
+          }
         );
 
         res.send(data);
@@ -527,10 +542,10 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection to DB
-    // await client.db('admin').command({ ping: 1 });
-    // console.log(
-    //   'Pinged your deployment. You successfully connected to MongoDB!'
-    // );
+    await client.db('admin').command({ ping: 1 });
+    console.log(
+      'Pinged your deployment. You successfully connected to MongoDB!'
+    );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
