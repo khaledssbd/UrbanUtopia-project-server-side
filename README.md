@@ -16,7 +16,7 @@
 
 ---
 
-# Key Features:
+# Project Overview:
 
 - Admin can post a new apartment info
 - User can apply for the agreement for an apartment
