@@ -1,9 +1,5 @@
 # UrbanUtopia
 
-# Admin username: Khaled Siddique
-
-# Admin Password: Sssssss@22
-
 ## Live site:
 
 - Click here- [UrbanUtopia on firebase](https://urbanutopia-by-khaled.web.app)
