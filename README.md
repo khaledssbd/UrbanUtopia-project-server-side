@@ -88,46 +88,14 @@ Before you begin, ensure you have the following installed on your local machine:
   total payments, total reviews, total apartments, percentage of available and
   unavailable apartments
 
-# Description of tools
-
-- Creative Design
-- All Device Responsive
-- Loading data in a amazing way with no bug using TanStack Query
-- axiosSecure to force logout a hacker who wants to ge others data
-- CRUD or REST(Representational State Transfer) API(Application Programming
-  Interface) support with post get put delete requests
-- Custom API and Server configuration with database
-- tailwind CSS
-- Awesome dark theme support
-- Toast Message and sweet-alert2 for notifications
-- react-responsive-carousel, aos Implementation for better UI
-- jspdf for pdf downlaod
-- Environment Variable configuration to save admin data from hackers
-- Regex with Valid email
-- Regex with Uppercase letters, lowercase letters and 6 characters in password
-- PrivateRoute, adminRoute, memberRoute to stop one to browse others pages
-- Different Dashboard for Admin, Member and user
-- Local Storage and API post configuration with Protected route
-- jwt configuration to configure security
-- react-hook-form in registration
-- Adaptable & Robust
-- No lorem text and no javascript default alert
-
 # npm Packages
 
-- npm i aos
-- npm i axios
-- npm i jspdf
-- npm i firebase
-- npm i react-icons
-- npm i sweetalert2
-- npm i lottie-react
-- npm i react-tooltip
-- npm i react-hot-toast
-- npm i react-hook-form
-- npm i react-router-dom
-- npm i react-helmet-async
-- npm install react-tooltip
-- npm i @tanstack/react-query
-- npm install -g firebase-tools
-- npm i react-simple-typewriter
+- npm i cookie-parser
+- npm i cors
+- npm i dotenv
+- npm i express
+- npm i jsonwebtoken
+- npm i mongodb
+- npm i nodemailer
+- npm i nodemon
+- npm i stripe
