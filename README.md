@@ -2,9 +2,9 @@
 
 ## Live site:
 
-- Click here- [UrbanUtopia on firebase](https://urbanutopia-by-khaled.web.app)
-- Click here- [UrbanUtopia on vercel](https://urbanutopia-by-khaled.vercel.app)
-- Click here- [UrbanUtopia on surge](https://urbanutopia-by-khaled.surge.sh)
+- [UrbanUtopia on firebase](https://urbanutopia-by-khaled.web.app)
+- [UrbanUtopia on vercel](https://urbanutopia-by-khaled.vercel.app)
+- [UrbanUtopia on surge](https://urbanutopia-by-khaled.surge.sh)
 - Click here-
   [UrbanUtopia on netlify](https://urbanutopia-by-khaled.netlify.app)
 
