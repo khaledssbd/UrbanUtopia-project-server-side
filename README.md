@@ -10,7 +10,6 @@
 ## GitHub Repository:
 
 - [Client-Repository](https://github.com/khaledssbd/UrbanUtopia-project-client-side)
-
 - [Server-Repository](https://github.com/khaledssbd/UrbanUtopia-project-server-side)
 
 ---
